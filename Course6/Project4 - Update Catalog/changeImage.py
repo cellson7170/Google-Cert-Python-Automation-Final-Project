@@ -2,7 +2,6 @@
 
 from PIL import Image
 import os, sys
-from inspect import getsourcefile
 
 cwd = os.getcwd() + "/Course6/Project4 - Update Catalog/supplier-data/images/"
 
