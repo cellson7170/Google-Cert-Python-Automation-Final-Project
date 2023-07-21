@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-import sys, os
 import shutil
 import psutil
 import socket
 import emails
+import time
 
 
 
@@ -33,30 +33,34 @@ def resolve_hostname():
 
 body = "Please check your system and resolve the issue as soon as possible."
 
-if not check_cpu_usage():
-    message = emails.generate_email('automation@example.com', 
-                                    '<username>@example.com', 
-                                    "Error - CPU usage is over 80%",
-                                    body)
-    emails.send_email(message)
+starttime = time.time()
 
-if not check_disk_usage('/'):
-    message = emails.generate_email('automation@example.com', 
-                                    '<username>@example.com', 
-                                    "Error - Available disk space is less than 20%",
-                                    body)
-    emails.send_email(message)
+while True:
+    if not check_cpu_usage():
+        message = emails.generate_simple_email('automation@example.com', 
+                                        '<username>@example.com', 
+                                        "Error - CPU usage is over 80%",
+                                        body)
+        emails.send_email(message)
 
-if not check_memory_usage():
-    message = emails.generate_email('automation@example.com', 
-                                    '<username>@example.com', 
-                                    "Error - Available memory is less than 500MB",
-                                    body)
-    emails.send_email(message)
+    if not check_disk_usage('/'):
+        message = emails.generate_simple_email('automation@example.com', 
+                                        '<username>@example.com', 
+                                        "Error - Available disk space is less than 20%",
+                                        body)
+        emails.send_email(message)
 
-if not resolve_hostname():
-    message = emails.generate_email('automation@example.com', 
-                                    '<username>@example.com', 
-                                    "Error - localhost cannot be resolved to 127.0.0.1",
-                                    body)
-    emails.send_email(message)
+    if not check_memory_usage():
+        message = emails.generate_simple_email('automation@example.com', 
+                                        '<username>@example.com', 
+                                        "Error - Available memory is less than 500MB",
+                                        body)
+        emails.send_email(message)
+
+    if not resolve_hostname():
+        message = emails.generate_simple_email('automation@example.com', 
+                                        '<username>@example.com', 
+                                        "Error - localhost cannot be resolved to 127.0.0.1",
+                                        body)
+        emails.send_email(message)
+    time.sleep(60.0 - ((time.time() - starttime) % 60.0))
